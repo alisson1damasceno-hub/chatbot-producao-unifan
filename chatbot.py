@@ -1,8 +1,13 @@
 import pandas as pd
 
-# ── Carrega as planilhas ──────────────────────────────────────────
+# ── Carrega a tabela mãe ─────────────────────────────────────────
 intencoes = pd.read_csv("Intencoes.csv")
-manutencao = pd.read_csv("manutencao_tecidos.csv")
+
+# ── Registra as tabelas filhas aqui ─────────────────────────────
+# Para adicionar nova intenção guiada: só adicionar uma linha aqui
+tabelas_guiadas = {
+    "manutencao": pd.read_csv("manutencao_tecidos.csv"),
+}
 
 # ── Estado da conversa ───────────────────────────────────────────
 estado = {
@@ -11,14 +16,16 @@ estado = {
 }
 
 # ── Funções ──────────────────────────────────────────────────────
-def identificar_intencao(mensagem):
+def identificar_intencoes(mensagem):
     mensagem = mensagem.lower()
+    encontradas = []
     for _, row in intencoes.iterrows():
         palavras = row["palavras_chave"].split(",")
         for palavra in palavras:
             if palavra.strip() in mensagem:
-                return row
-    return None
+                encontradas.append(row)
+                break
+    return encontradas
 
 def buscar_subtipo(mensagem, tabela):
     mensagem = mensagem.lower()
@@ -27,30 +34,48 @@ def buscar_subtipo(mensagem, tabela):
         for palavra in palavras:
             if palavra.strip() in mensagem:
                 return row["resposta_padrao"]
-    return "Não reconheci essa opção. Tente novamente com uma das alternativas sugeridas."
+    return None
 
 def processar_mensagem(mensagem):
     if estado["aguardando_followup"]:
         intencao_id = estado["intencao_ativa"]
-
-        if intencao_id == "manutencao":
-            resposta = buscar_subtipo(mensagem, manutencao)
+        tabela = tabelas_guiadas.get(intencao_id)
+        resposta = buscar_subtipo(mensagem, tabela)
 
         estado["aguardando_followup"] = False
         estado["intencao_ativa"] = None
+
+        if resposta is None:
+            return "Não reconheci essa opção. Tente novamente com as alternativas sugeridas."
         return resposta
 
-    intencao = identificar_intencao(mensagem)
+    intencoes_encontradas = identificar_intencoes(mensagem)
 
-    if intencao is None:
+    if not intencoes_encontradas:
         return "Desculpe, não entendi. Pode reformular?"
 
-    if intencao["tipo_resposta"] == "guiada":
-        estado["aguardando_followup"] = True
-        estado["intencao_ativa"] = intencao["id_intencao"]
-        return intencao["pergunta_followup"]
+    respostas = []
+    guiada_pendente = None
 
-    return intencao["resposta_padrao"]
+    for intencao in intencoes_encontradas:
+        if intencao["tipo_resposta"] == "direta":
+            respostas.append(intencao["resposta_padrao"])
+        elif intencao["tipo_resposta"] == "guiada":
+            guiada_pendente = intencao
+
+    if guiada_pendente is not None:
+        intencao_id = guiada_pendente["id_intencao"]
+        tabela = tabelas_guiadas.get(intencao_id)
+
+        resposta_direta = buscar_subtipo(mensagem, tabela)
+        if resposta_direta:
+            respostas.append(resposta_direta)
+        else:
+            estado["aguardando_followup"] = True
+            estado["intencao_ativa"] = intencao_id
+            respostas.append(guiada_pendente["pergunta_followup"])
+
+    return "\n".join(respostas)
 
 # ── Loop principal ───────────────────────────────────────────────
 print("Chatbot iniciado! Digite 'sair' para encerrar.\n")
@@ -62,3 +87,4 @@ while True:
         break
     resposta = processar_mensagem(mensagem)
     print(f"Bot: {resposta}\n")
+    
