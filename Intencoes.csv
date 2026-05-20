@@ -1,7 +1,7 @@
 id_intencao,palavras_chave,tipo_resposta,resposta_padrao,pergunta_followup
 saudacao,"olá,bom dia,boa tarde,boa noite,boa madrugada,oi",direta,Olá! Como posso ajudar hoje?,
 despedida,"até logo,tchau,até mais,obrigado,obrigada,falou,valeu,grato,grata",direta,"Foi um prazer ajudar! Se precisar de mais alguma coisa, é só chamar.",
-qualidade,"feito,material,original,falso,falsificado,durabilidade,defeito",direta,"Por ser um produto original, asseguramos a longa durabilidade do item e a qualidade do material.",
+qualidade,"feito,material,original,falso,falsificado,durabilidade,defeito,qualidade",direta,"Por ser um produto original, asseguramos a longa durabilidade do item e a qualidade do material.",
 personalizacao,"estampa,personalizada,personalizar,tamanho,número",direta,"Oferecemos a possibilidade do produto ser personalizado pelo próprio cliente. Disponibilizamos as seguintes opções de personalização: tamanho, cor e estampa.",
 sustentabilidade,"poluição,meio-ambiente,ecológico,natureza,sustentável,sustentáveis",direta,"Nosso trabalho prioriza o uso consciente dos recursos naturais, buscamos reduzir o desperdício no processo de confecção e aproveitamos ao máximo os tecidos na produção.",
 manutencao,"manutenção,cuidados,precaução,lavagem,lavar,cuidar,conservar",guiada,,Qual é o tipo de tecido da sua peça? Responda com uma das opções: algodão / linho / seda / sintético / lã
