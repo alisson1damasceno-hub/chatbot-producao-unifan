@@ -1,15 +1,41 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chatbot - Produção Unifan</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+
+    :root[data-theme="light"] {
+      --bg-page:    #f0f2f5;
+      --bg-chat:    #ffffff;
+      --bg-msg-bot: #f1f1f1;
+      --bg-input:   #ffffff;
+      --color-text: #1a1a1a;
+      --color-sub:  #888888;
+      --color-prim: #2d6a4f;
+      --color-prim-dark: #1b4332;
+      --border:     #dddddd;
+      --msg-user-text: #ffffff;
+    }
+
+    :root[data-theme="dark"] {
+      --bg-page:    #0f1117;
+      --bg-chat:    #1a1d27;
+      --bg-msg-bot: #252836;
+      --bg-input:   #252836;
+      --color-text: #e8e8e8;
+      --color-sub:  #aaaaaa;
+      --color-prim: #40916c;
+      --color-prim-dark: #2d6a4f;
+      --border:     #333344;
+      --msg-user-text: #ffffff;
+    }
 
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f0f2f5;
+      background: var(--bg-page);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -19,20 +45,43 @@
     .chat-container {
       width: 420px;
       height: 600px;
-      background: white;
+      background: var(--bg-chat);
       border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
     .chat-header {
-      background: #2d6a4f;
-      color: white;
-      padding: 18px 20px;
-      font-size: 16px;
+      background: var(--color-prim);
+      color: #ffffff;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header span {
+      font-size: 15px;
       font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      border-radius: 20px;
+      padding: 5px 12px;
+      color: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.25);
     }
 
     .chat-messages {
@@ -54,14 +103,15 @@
     }
 
     .message.bot {
-      background: #f1f1f1;
+      background: var(--bg-msg-bot);
+      color: var(--color-text);
       align-self: flex-start;
       border-bottom-left-radius: 4px;
     }
 
     .message.user {
-      background: #2d6a4f;
-      color: white;
+      background: var(--color-prim);
+      color: var(--msg-user-text);
       align-self: flex-end;
       border-bottom-right-radius: 4px;
     }
@@ -69,25 +119,28 @@
     .chat-input {
       display: flex;
       padding: 12px;
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--border);
       gap: 8px;
+      background: var(--bg-chat);
     }
 
     .chat-input input {
       flex: 1;
       padding: 10px 14px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border);
       border-radius: 24px;
       outline: none;
       font-size: 14px;
+      background: var(--bg-input);
+      color: var(--color-text);
     }
 
     .chat-input input:focus {
-      border-color: #2d6a4f;
+      border-color: var(--color-prim);
     }
 
     .chat-input button {
-      background: #2d6a4f;
+      background: var(--color-prim);
       color: white;
       border: none;
       border-radius: 24px;
@@ -97,13 +150,22 @@
     }
 
     .chat-input button:hover {
-      background: #1b4332;
+      background: var(--color-prim-dark);
     }
+
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
   </style>
 </head>
 <body>
   <div class="chat-container">
-    <div class="chat-header">🌿 Chatbot Produção Unifan</div>
+    <div class="chat-header">
+      <span>🌿 Chatbot Produção Unifan</span>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span>
+        <span id="theme-label">Escuro</span>
+      </button>
+    </div>
     <div class="chat-messages" id="messages">
       <div class="message bot">Olá! Como posso ajudar você hoje?</div>
     </div>
@@ -116,15 +178,21 @@
   <script>
     const input = document.getElementById("input");
     const messages = document.getElementById("messages");
+    const html = document.documentElement;
 
-    input.addEventListener("keydown", function(e) {
-      if (e.key === "Enter") enviar();
-    });
+    input.addEventListener("keydown", e => { if (e.key === "Enter") enviar(); });
+
+    function toggleTheme() {
+      const atual = html.getAttribute("data-theme");
+      const novo = atual === "light" ? "dark" : "light";
+      html.setAttribute("data-theme", novo);
+      document.getElementById("theme-icon").textContent = novo === "dark" ? "☀️" : "🌙";
+      document.getElementById("theme-label").textContent = novo === "dark" ? "Claro" : "Escuro";
+    }
 
     async function enviar() {
       const texto = input.value.trim();
       if (!texto) return;
-
       adicionarMensagem(texto, "user");
       input.value = "";
 
