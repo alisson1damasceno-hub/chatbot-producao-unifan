@@ -17,6 +17,7 @@ intencoes = pd.read_csv(os.path.join(base, "Intencoes.csv"))
 
 tabelas_guiadas = {
     "manutencao": pd.read_csv(os.path.join(base, "manutencao_tecidos.csv")),
+    "sugestao_produto": pd.read_csv(os.path.join(base, "sugestao_produto.csv")),
 }
 
 # ── Estado da conversa ───────────────────────────────────────────
@@ -32,7 +33,7 @@ def identificar_intencoes(mensagem):
     for _, row in intencoes.iterrows():
         palavras = row["palavras_chave"].split(",")
         for palavra in palavras:
-            if palavra.strip() in mensagem:
+            if palavra.strip() and palavra.strip() in mensagem:
                 encontradas.append(row)
                 break
     return encontradas
@@ -42,7 +43,7 @@ def buscar_subtipo(mensagem, tabela):
     for _, row in tabela.iterrows():
         palavras = row["palavras_chave"].split(",")
         for palavra in palavras:
-            if palavra.strip() in mensagem:
+            if palavra.strip() and palavra.strip() in mensagem:
                 return row["resposta_padrao"]
     return None
 

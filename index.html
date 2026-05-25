@@ -299,6 +299,13 @@
     const messages = document.getElementById("messages");
     const html = document.documentElement;
 
+    const ocasioes = [
+  { label: "👕 Casual",    icone: "👕", valor: "casual"   },
+  { label: "🏃 Esporte",   icone: "🏃", valor: "esporte"  },
+  { label: "🎉 Festa",     icone: "🎉", valor: "festa"    },
+  { label: "💼 Trabalho",  icone: "💼", valor: "trabalho" },
+  { label: "👔 Uniforme",  icone: "👔", valor: "uniforme" },
+];
     const tecidos = [
       { label: "Algodão",   icone: "🌿", valor: "algodão"   },
       { label: "Linho",     icone: "🌾", valor: "linho"     },
@@ -381,6 +388,26 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
+    function mostrarBotoesOcasiao() {
+      const wrap = document.createElement("div");
+      wrap.classList.add("tecidos-wrap");
+
+      const grid = document.createElement("div");
+      grid.classList.add("tecidos-grid");
+
+      ocasioes.forEach(o => {
+        const btn = document.createElement("button");
+        btn.classList.add("btn-tecido");
+        btn.innerHTML = `<span class="icone">${o.icone}</span>${o.label}`;
+        btn.onclick = () => { wrap.remove(); enviarTexto(o.valor); };
+        grid.appendChild(btn);
+      });
+
+      wrap.appendChild(grid);
+      messages.appendChild(wrap);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
     async function enviarTexto(texto) {
       // Remove botões de tecido pendentes se existirem
       const tecidosPendentes = document.querySelector(".tecidos-wrap");
@@ -399,6 +426,8 @@
 
       if (dados.resposta.includes("tipo de tecido")) {
         mostrarBotoesTecido();
+      } else if (dados.resposta.includes("tipo de ocasião")) {
+        mostrarBotoesOcasiao();
       }
     }
 

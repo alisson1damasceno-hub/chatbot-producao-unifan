@@ -1,0 +1,6 @@
+id_intencao_pai,id_subtipo,palavras_chave,resposta_padrao
+sugestao_produto,casual,"casual,cazual","Para roupas casuais, recomendamos principalmente algodão, linho ou tecidos sintéticos leves. Eles oferecem conforto, respirabilidade e praticidade para o dia a dia."
+sugestao_produto,esporte,"esporte,esporti,sport","Para atividades esportivas, recomendamos tecidos sintéticos como poliéster, nylon e elastano. Esses materiais ajudam na evaporação do suor, oferecem elasticidade e maior conforto durante os movimentos."
+sugestao_produto,festa,"festa,party,festinha,festão,festao","Para ocasiões festivas, recomendamos seda, cetim ou linho, dependendo do estilo desejado. Esses tecidos costumam proporcionar um visual mais elegante e sofisticado."
+sugestao_produto,trabalho,"trabalho,trabalhu,job","Para o ambiente de trabalho, recomendamos algodão, linho ou lã. Esses tecidos combinam conforto, boa apresentação e durabilidade para o uso profissional."
+sugestao_produto,uniforme,uniforme,"Para uniformes, recomendamos algodão ou tecidos sintéticos. Eles oferecem resistência, conforto e facilidade de manutenção para o uso frequente."
