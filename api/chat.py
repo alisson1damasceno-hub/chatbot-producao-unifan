@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import pandas as pd
 import os
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -33,7 +34,7 @@ def identificar_intencoes(mensagem):
     for _, row in intencoes.iterrows():
         palavras = row["palavras_chave"].split(",")
         for palavra in palavras:
-            if palavra.strip() and palavra.strip() in mensagem:
+            if palavra.strip() and re.search(r'\b' + re.escape(palavra.strip()) + r'\b', mensagem):
                 encontradas.append(row)
                 break
     return encontradas
@@ -43,7 +44,7 @@ def buscar_subtipo(mensagem, tabela):
     for _, row in tabela.iterrows():
         palavras = row["palavras_chave"].split(",")
         for palavra in palavras:
-            if palavra.strip() and palavra.strip() in mensagem:
+            if palavra.strip() and re.search(r'\b' + re.escape(palavra.strip()) + r'\b', mensagem):
                 return row["resposta_padrao"]
     return None
 
